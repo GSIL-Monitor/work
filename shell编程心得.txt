@@ -1,0 +1,7 @@
+1、对于类unix操作系统若需要使用带有windows格式的文件，需要进行格式转换，才能进行正常使用。
+dos2unix filename    # dos-->unix
+unix2dos filename    # unix-->dos
+安装命令：
+#yum install unix2dos
+#yum install dos2unix
+2、
