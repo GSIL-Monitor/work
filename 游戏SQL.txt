@@ -1,0 +1,55 @@
+1、解决APP平台130区服玩家没有公会会长和副会长的解决方法
+玩家信息：
+角色ID：131001714
+账号：14783155719
+密码：one five
+
+解决办法：将玩家所在的公会中贡献值(totalcons)最大的两位设置为会长(title1=)和副会长(title=2)
+mysql> select * from gFMember where roleid=131001741;    # familyid 公会ID
++-----------+-----------+-------+-----------+
+| roleid    | familyid  | title | totalcons |
++-----------+-----------+-------+-----------+
+| 131001741 | 131000002 |     0 |        75 |
++-----------+-----------+-------+-----------+
+1 row in set (0.00 sec)
+
+mysql> select * from gFMember where familyid=131000002 order by totalcons desc limit 2;    # 查询公会中贡献值(totalcons)最大的两位玩家
++-----------+-----------+-------+-----------+
+| roleid    | familyid  | title | totalcons |
++-----------+-----------+-------+-----------+
+| 131001674 | 131000002 |     0 |      2400 |
+| 131001553 | 131000002 |     0 |      1525 |
++-----------+-----------+-------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> update gFMember set title=1  where roleid=131001674;
+1 row in set (0.00 sec)
+
+mysql> update gFMember set title=2  where roleid=131001553;
+1 row in set (0.00 sec)
+
+mysql> select * from gFMember where familyid=131000002 and title=1;
++-----------+-----------+-------+-----------+
+| roleid    | familyid  | title | totalcons |
++-----------+-----------+-------+-----------+
+| 131001674 | 131000002 |     1 |      2400 |
++-----------+-----------+-------+-----------+
+1 row in set (0.00 sec)
+
+mysql> select * from gFMember where familyid=131000002 and title=2;
++-----------+-----------+-------+-----------+
+| roleid    | familyid  | title | totalcons |
++-----------+-----------+-------+-----------+
+| 131001553 | 131000002 |     2 |      1525 |
++-----------+-----------+-------+-----------+
+1 row in set (0.00 sec)
+
+mysql> update gFamily set impeach_time=0 where familyid=131000002;    # 让公会ID：131000002弹劾失效
+ 
+1 row in set (0.00 sec)
+
+
+
+
+mysql> select * from gFMember where familyid=131000001 and title=2;
+mysql> update gFMember set title=1,familyid=131000001 where roleid=131001741;
