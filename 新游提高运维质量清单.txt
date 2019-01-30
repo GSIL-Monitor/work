@@ -5,11 +5,11 @@
 3、加入钉钉报警管理项
 4、接入CMDB管理系统
 5、Mysql、MongoDB、Redis等的数据库理论知识、数据库高可用、数据库调优、数据库备份、数据库恢复、数据库语句(减少人工干预数据库的次数，保证数据库安全)
+6、学一些python算法相关的知识
+
+1、提高书写shell脚本的能力
+2、熟悉K8S或Docker容器知识
+3、熟悉jumpserver和openvpn相关知识
 
 
-6、提高书写shell脚本的能力
-7、熟悉K8S或Docker容器知识
-8、熟悉jumpserver和openvpn相关知识
-
-
-关键词：python cmdb jenkins发布 钉钉告警  
+关键词：python cmdb jenkins发布 钉钉告警  算法
