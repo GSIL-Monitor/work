@@ -1,6 +1,7 @@
 0、常用查询语句
 select count(*) from grole;select * from t_pay_stastics limit 1;
 select sum(amount_rmbfen) from t_pay_stastics;
+select * from t_user_login_2019_2 order by login desc limit 1;
 
 
 1、解决APP平台130区服玩家没有公会会长和副会长的解决方法
