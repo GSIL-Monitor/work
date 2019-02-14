@@ -1,0 +1,37 @@
+导出备份库
+cd /data/backup/20180928-10.9.119.104/
+cp -r  zzgame799_201809280100.tar.gz  /tmp/zzgame799_201809280100.tar.gz
+cd  /tmp
+mkdir 799
+tar -izxvf zzgame799_201809280100.tar.gz -C 799/
+应用log
+innobackupex --defaults-file=/tmp/799/backup-my.cnf  --apply-log /tmp/799/
+
+
+cd /data/backup/20180928-10.9.119.104/
+vim zzgame799_error.log
+注释UTF-8字符集
+#vim /etc/my.cnf  
+#default-character-set=utf8
+
+/usr/local/mysql/bin/mysqlbinlog --start-datetime='2018-09-28 07:40:54' --stop-datetime='2018-09-28 10:47:08' /data/mysql/zzgame799/zzgame799-bin.000*>/tmp/zzgame799_2018_09_28.sql
+
+vim /etc/my.cnf 增加一个888的实例配置
+
+[mysqld888]
+port            = 6888
+datadir         = /tmp/799/（改为指定目录）
+socket          = /tmp/mysqlzz888.sock
+log-error       = /data/mysql/log/zzgame888.log
+pid-file = /tmp/799/zzgame888.pid（改为指定目录）
+。。。
+sudo /usr/local/mysql/bin/mysqld_multi start 888
+
+
+
+
+
+
+
+
+/usr/local/mysql/bin/mysqlbinlog --start-datetime='2019-02-04 02:10:00' --stop-datetime='2019-02-04 09:25:00' /data/mysql/seer4399_game182_bak/seer4399_game182-bin.000*>/tmp/seer4399_game182_2.sql
