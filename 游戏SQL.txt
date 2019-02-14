@@ -1,3 +1,8 @@
+0、常用查询语句
+select count(*) from grole;select * from t_pay_stastics limit 1;
+select sum(amount_rmbfen) from t_pay_stastics;
+
+
 1、解决APP平台130区服玩家没有公会会长和副会长的解决方法
 玩家信息：
 角色ID：131001714
@@ -47,6 +52,38 @@ mysql> select * from gFMember where familyid=131000002 and title=2;
 mysql> update gFamily set impeach_time=0 where familyid=131000002;    # 让公会ID：131000002弹劾失效
  
 1 row in set (0.00 sec)
+
+
+2、删除binlog日志
+show binary logs;
+purge binary logs to 'seer_game632-bin.000024';  # 保留24(包含)以后的binlog日志
+
+
+3、mysql5.6 5.7启用了GTID，恢复办法
+在主库上执行mysql> show global variables like '%gtid%'\G
+gtid_purged                      | 8d17dc80-6ab2-11e7-8d4a-fa163e0dad2d:1-5328003
+
+在从库上执行mysql> show global variables like '%gtid%'\G
+
+gtid_executed                    | 8d17dc80-6ab2-11e7-8d4a-fa163e0dad2d:1-5869171
+
+在从库上执行
+mysql> stop slave;
+mysql> reset slave;
+mysql> reset master;
+
+在从库上设置gtid_purged
+该值有两个来源，一是在主库上查询的gtid_purged，二是在从库上查询的已经执行过的gtid_executed值
+
+注意：一定记得加上从库上已经执行过的gtid，若只设置了主库上的gtid_purged，此时从库会重新拉取主库上所有的二进制日志文件，同步过程会出现其他错误，导致同步无法进行
+
+mysql> set @@global.gtid_purged='8d17dc80-6ab2-11e7-8d4a-fa163e0dad2d:1-5328003，8d17dc80-6ab2-11e7-8d4a-fa163e0dad2d:1-5869171';
+
+重新开启同步
+mysql> change master to master_host='192.168.1.15',master_port=3306,master_user='repl',master_password='xxx',master_auto_position=1;
+
+
+
 
 
 
