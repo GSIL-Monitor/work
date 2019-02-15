@@ -1,0 +1,98 @@
+xtrabackup多实例备份、恢复、binlog恢复
+
+1、多实例备份
+
+使用--defaults-group="mysqld500"  来识别多个实例
+
+#!/bin/bash
+
+time=`date +%Y%m%d`
+date=`date +%Y%m%d%H%M`
+ip_addr=`/sbin/ifconfig eth1|grep "inet addr"|awk '{print $2}'|awk -F : '{print $2}'`
+
+if [ ! -d /backup/$time-$ip_addr ]
+then
+mkdir /backup/$time-$ip_addr -p
+
+/usr/bin/innobackupex --user=kdgame --password=dsdxfsh2014kdgame --sock=/tmp/mysqlkd500.sock --defaults-group="mysqld500" --stream=tar /backup/$time-$ip_addr 2>/backup/$time-$ip_addr/kdgame500_error.log |gzip > /backup/$time-$ip_addr/kdgame500_$date.tar.gz
+
+fi
+
+
+2、恢复
+
+解压
+$ tar -izxvf kdgame500_201510080400.tar.gz -C /tmp/500
+
+应用log
+
+$ innobackupex --defaults-file=/tmp/500/backup-my.cnf  --apply-log /tmp/500/
+
+
+
+恢复到数据库存放位置
+vim /tmp/test/backup-my.cnf
+增加datadir=/data/mysql/kdgame500
+
+执行下面这一步，把/tmp/500复制到/data/mysql/kdgame500
+sudo innobackupex --user=kdgame --password=dsdxfsh2014kdgame  --defaults-file=/tmp/500/backup-my.cnf --copy-back /tmp/500/
+
+或者直接cp到数据库位置即可
+
+
+3、基于binlog恢复到某一时间
+
+xtrabackup的备份日志如下：
+
+151008 04:36:12  innobackupex: Connecting to MySQL server with DSN 'dbi:mysql:;mysql_read_default_group=xtrabackup;mysql_socket=/tmp/mysqlkd500.sock' as 'kdgame'  (using password: YES).
+151008 04:36:12  innobackupex: Connected to MySQL server
+151008 04:36:12  innobackupex: Executing a version check against the server...
+151008 04:36:14  innobackupex: Done.
+
+151008 05:25:07  innobackupex: All tables unlocked
+151008 05:25:07  innobackupex: Waiting for ibbackup (pid=28266) to finish
+xtrabackup: Transaction log of lsn (1331060017731) to (1331092193478) was copied.
+
+innobackupex: Backup created in directory '/backup/20151008-10.10.36.111'
+innobackupex: MySQL binlog position: filename 'kdgame500-bin.000451', position 483431276
+151008 05:25:08  innobackupex: Connection to database server closed
+
+利用完整备份和binlog文件把数据库恢复到某一时间
+
+使用pos
+mysqlbinlog --start-position=   --stop-position=  kdgame500-bin.0000*>kdgame500_recover.sql
+
+使用时间
+/usr/local/mysql/bin/mysqlbinlog --start-datetime='2015-10-05 05:25:07' --stop-datetime='2014-10-07 15:00:00' /data/mysql/kdgame500/kdgame500-bin.000108>kdgame500_binlog.sql
+
+然后 
+source  kdgame500_binlog.sql
+进行恢复
+
+通过观察发现，xtrabackup的备份结束时间和pos点是一致的
+binlog日志：
+
+# at 483431276
+#151008  5:25:07 server id 1  end_log_pos 483431349     Query   thread_id=654   exec_time=0     error_code=0
+SET TIMESTAMP=1444253107/*!*/;
+BEGIN
+/*!*/;
+
+
+
+4、恢复从库
+结合数据库备份的日志，找到备份时的binlog日志和pos点，即可。
+
+xtrabackup的备份日志如下：
+
+innobackupex: MySQL binlog position: filename 'zzgame129-bin.000108', position 786866937
+140624 01:16:45  innobackupex: Connection to database server closed
+
+
+可以通过filename='zzgame129-bin.000108',pos=786866937来恢复从库，进而可以从主库进行复制。
+
+
+
+
+
+

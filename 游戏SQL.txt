@@ -83,6 +83,16 @@ mysql> set @@global.gtid_purged='8d17dc80-6ab2-11e7-8d4a-fa163e0dad2d:1-5328003�
 重新开启同步
 mysql> change master to master_host='192.168.1.15',master_port=3306,master_user='repl',master_password='xxx',master_auto_position=1;
 
+4、4399平台182区数据恢复失败，后台添加记录执行语句
+insert into t_pay_stastics(`roleid`,`rname`,`raccid`,`accname`,`srctype`,`date`,`datetime`,`prev_bonusgold`,`curr_bonusgold`,`prev_paidgold`,`add_paidgold`,`curr_paidgold`,`prev_nonolv`,`curr_nonolv`,`ip`,`mac`,`devid`,`paycase`,`rcptmd5`,`receipt`,`amount_rmbfen`,`paytype`,`subtype`) values(10183000587,'神一樣的逍遥',1018310003906873,'quick_ard_27_2886126323',27,'2019-02-04','2019-02-04 06:06:53',0,0,0,0,0,0,0,'none','none','FF053A22-809E-352D-85A5-C0FB8524D4CD',2100030,'none','none',3000,1,'none'),(10183000597,'神一樣的逍遥',1018310003906884,'quick_ard_27_2886129298',27,'2019-02-04','2019-02-04 07:11:08',0,0,0,0,0,0,0,'none','none','FF053A22-809E-352D-85A5-C0FB8524D4CD',2100030,'none','none',3000,1,'none'),(10183000725,'陈欣欣',1018310003907024,'quick_ard_27_2496475815',27,'2019-02-04','2019-02-04 07:49:53',0,0,0,0,0,0,0,'none','none','F19CF02E-3602-3692-88D9-C6C60D3EBA9F',2100100,'none','none',10000,1,'none'),(10183003379,'失恋少年',1018310003909937,'quick_ard_27_2647968692',27,'2019-02-04','2019-02-04 07:40:26',0,0,0,0,0,0,0,'none','none','EC6091D9-3424-3D48-AA96-C1B87CB101D9',2100006,'none','none',6000,1,'none');
+
+update t_pay_stastics set amount_rmbfen=600 where id=1018;
+
+update t_pay_stastics set add_paidgold=300 where id=1015;
+update t_pay_stastics set add_paidgold=300 where id=1016;
+update t_pay_stastics set add_paidgold=1000 where id=1017;
+update t_pay_stastics set add_paidgold=60 where id=1018;
+
 
 
 
